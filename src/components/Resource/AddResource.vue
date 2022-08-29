@@ -1,6 +1,14 @@
 <template>
+    <base-alert v-if="isAlertShown" :title="titles" @close="isAlertShown = false">
+    <template #default>
+         <p>Please enter proper data to submit data!</p>
+    </template>
+    <template #actions>
+        <base-button @click="isAlertShown= false">Okay</base-button>
+    </template>
+    </base-alert>
     <base-card>
-    <form action="" @submit.prevent="handleSubmit">
+    <form  @submit.prevent="handleSubmit">
     <div class="form-control">
         <label for="title">Title</label>
         <input id="title" type="text" v-model="title" placeholder="Title" />
@@ -23,14 +31,17 @@
 
 <script>
 import BaseButton from "../UI/BaseButton.vue"
+import BaseAlert from "../UI/BaseAlert.vue"
 export default {
-    components: { BaseButton},
+    components: { BaseButton,BaseAlert},
     inject: ['addResource' ],
     data() {
         return {
             title: "",
             description: "",
-            link: ""
+            link: "",
+            isAlertShown: false,
+            titles: "Invaild Input",
         }
     },
  
@@ -41,7 +52,13 @@ export default {
                 description: this.description,
                 link: this.link,
             }
-           this.addResource(data)
+            if(this.title === '' || this.description === '' || this.link === '' ) {
+                this.isAlertShown = true; 
+                return;
+            }else{
+                this.addResource(data)
+            }
+           
             
         }
     }
